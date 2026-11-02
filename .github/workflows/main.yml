@@ -8,26 +8,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Get Date
-        id: get-date
+      - name: Install Dependencies
         run: |
-          echo "date=$(date -u +'%Y%m%d')" >> $GITHUB_OUTPUT
-        shell: bash
+          sudo apt update
+          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libssl-dev cmake setuptools
+          pip3 install --user --upgrade buildozer kivy opencv-python numpy cython
 
-      - name: Cache Buildozer global directory
-        uses: actions/cache@v4
-        with:
-          path: ~/.buildozer
-          key: buildozer-global-${{ hashFiles('buildozer.spec') }}
-
-      - name: Cache Android SDK/NDK
-        uses: actions/cache@v4
-        with:
-          path: ~/.android
-          key: android-sdk-${{ steps.get-date.outputs.date }}
-
-      - name: Build with Buildozer
-        uses: jwscook/buildozer-action@v2
-        with:
-          command: buildozer android debug
-          buildozer_version: master
+      - name: Build APK with Buildozer
+        run: |
+          export PATH=$PATH:~/.local/bin
+          buildozer android debug
