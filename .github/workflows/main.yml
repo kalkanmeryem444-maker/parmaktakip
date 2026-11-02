@@ -1,11 +1,33 @@
 name: Build APK
 on: [push, pull_request]
+
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
+
     steps:
       - uses: actions/checkout@v4
+
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "date=$(date -u +'%Y%m%d')" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Cache Buildozer global directory
+        uses: actions/cache@v4
+        with:
+          path: ~/.buildozer
+          key: buildozer-global-${{ hashFiles('buildozer.spec') }}
+
+      - name: Cache Android SDK/NDK
+        uses: actions/cache@v4
+        with:
+          path: ~/.android
+          key: android-sdk-${{ steps.get-date.outputs.date }}
+
       - name: Build with Buildozer
-        uses: ArtemGovorov/buildozer-action@v1
+        uses: jwscook/buildozer-action@v2
         with:
           command: buildozer android debug
+          buildozer_version: master
