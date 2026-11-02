@@ -11,10 +11,10 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt update
-          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libssl-dev cmake setuptools
-          pip3 install --user --upgrade buildozer kivy opencv-python numpy cython
+          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libssl-dev cmake python3-setuptools
+          pip3 install --user --upgrade pip buildozer kivy opencv-python numpy cython
 
       - name: Build APK with Buildozer
         run: |
           export PATH=$PATH:~/.local/bin
-          buildozer android debug
+          yes y | buildozer android debug
